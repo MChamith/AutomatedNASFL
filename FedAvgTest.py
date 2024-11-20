@@ -20,29 +20,6 @@ from non_iid_partition import partition_noniid
 from datasets import load_dataset
 
 
-class CustomDataset(Dataset):
-    def __init__(self, dataset, idxs):
-        self.dataset = dataset
-        self.idxs = list(idxs)
-
-    def __len__(self):
-        return len(self.idxs)
-
-    def __getitem__(self, item):
-        # print('type ' + str(type(self.idxs[item])))
-        data = self.dataset[int(self.idxs[item])]
-        image = np.array(data['image'].convert('RGB'))
-        label = data['label']
-        # print('image ' + str(image))
-        # print('label ' + str(label))
-        image = torch.tensor(image, dtype=torch.float32) / 255.0
-        image = image.permute(2, 0, 1)
-        label = torch.tensor(label, dtype=torch.int64)
-
-        # print('image shape ' + str(image.shape))
-
-        return image, label
-
 # class CustomDataset(Dataset):
 #     def __init__(self, dataset, idxs):
 #         self.dataset = dataset
@@ -52,9 +29,32 @@ class CustomDataset(Dataset):
 #         return len(self.idxs)
 #
 #     def __getitem__(self, item):
-#         image, label = self.dataset[self.idxs[item]]
+#         # print('type ' + str(type(self.idxs[item])))
+#         data = self.dataset[int(self.idxs[item])]
+#         image = np.array(data['image'].convert('RGB'))
+#         label = data['label']
+#         # print('image ' + str(image))
+#         # print('label ' + str(label))
+#         image = torch.tensor(image, dtype=torch.float32) / 255.0
+#         image = image.permute(2, 0, 1)
+#         label = torch.tensor(label, dtype=torch.int64)
+#
 #         # print('image shape ' + str(image.shape))
+#
 #         return image, label
+
+class CustomDataset(Dataset):
+    def __init__(self, dataset, idxs):
+        self.dataset = dataset
+        self.idxs = list(idxs)
+
+    def __len__(self):
+        return len(self.idxs)
+
+    def __getitem__(self, item):
+        image, label = self.dataset[self.idxs[item]]
+        # print('image shape ' + str(image.shape))
+        return image, label
 
 class ClientUpdate(object):
     def __init__(self, dataset, batchSize, learning_rate, epochs, idxs):
@@ -189,7 +189,7 @@ def fedavg_test(model_file, learning_rate):
     eta = learning_rate
     B = 64
     B_test = 256
-    data_train, data_test = load_dataset_imgnet()
+    data_train, data_test = load_dataset_cfar()
     if iid:
         print('iid setting')
         data_dict = iid_partition(data_train, K)

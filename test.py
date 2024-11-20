@@ -29,8 +29,4 @@ plt.legend()
 # Show the plot
 plt.show()
 
-# for j in range(10):
-#     print(int(0.0007 * 1000000 * pow(2, j))/ 1000000)
-#     print(int(0.0007* 1000000 * pow(2, j + 1)) / 1000000)
-#     # lr_val = float(
-#     #     randrange(int(lr_left * 1000000 * pow(2, j)), int(lr_left * 1000000 * pow(2, j + 1)))) / 1000000
+

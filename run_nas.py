@@ -6,27 +6,27 @@ from client_process import get_best_config
 from torchvision import datasets, transforms
 import numpy as np
 from non_iid_partition import partition_noniid
-from datasets import load_dataset
+# from datasets import load_dataset
 
-# def load_dataset():
-#     transform = transforms.Compose(
-#         [transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
-#     data_train = datasets.CIFAR10(root='./data/cfar', train=True,
-#                                   download=True, transform=transform)
-#     data_test = datasets.CIFAR10(root='./data/cfar', train=False,
-#                                  download=True, transform=transform)
-
-    # return data_train, data_test
-
-def load_dataset_imgnet():
-    print('loading imagenet')
-    data_train = load_dataset('Maysee/tiny-imagenet', split='train')
-    data_test = load_dataset('Maysee/tiny-imagenet', split='valid')
-    print('data train ' + str(data_train[0]))
-    # data_train = convert_data(data_train)
-    # data_test = convert_data(data_test)
+def load_dataset():
+    transform = transforms.Compose(
+        [transforms.ToTensor(), transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))])
+    data_train = datasets.CIFAR10(root='./data/cfar', train=True,
+                                  download=True, transform=transform)
+    data_test = datasets.CIFAR10(root='./data/cfar', train=False,
+                                 download=True, transform=transform)
 
     return data_train, data_test
+
+# def load_dataset_imgnet():
+#     print('loading imagenet')
+#     data_train = load_dataset('Maysee/tiny-imagenet', split='train')
+#     data_test = load_dataset('Maysee/tiny-imagenet', split='valid')
+#     print('data train ' + str(data_train[0]))
+#     # data_train = convert_data(data_train)
+#     # data_test = convert_data(data_test)
+#
+#     return data_train, data_test
 
 def iid_partition(dataset, K):
     num_items_per_client = int(len(dataset) / K)
@@ -46,9 +46,9 @@ if __name__ == '__main__':
     iid = True
     freeze_support()
     # NAS params
-    total_clients = 3
+    total_clients = 100
     no_of_clients = 3
-    total_search_rounds = 1
+    total_search_rounds = 5
 
     # HPO params
     lr_left = 0.0007
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     best_losses = []
     best_models = []
 
-    data_train, data_test = load_dataset_imgnet()
+    data_train, data_test = load_dataset()
     if iid:
         data_dict = iid_partition(data_train, total_clients)
     else:
